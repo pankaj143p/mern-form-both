@@ -13,6 +13,46 @@ import Option from '@mui/joy/Option';
 
 
 export default function Signup() {
+
+  const [firstName, setFirstName] = React.useState('');
+  const [lastName, setLastName] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [successMessage, setSuccessMessage] = React.useState("");
+  const [errorMessage, setErrorMessage] = React.useState("");
+
+  const handleSignup = async (event) => {
+     event.preventDefault();
+     const userData = {
+        firstName,
+        lastName,
+        email,
+        password, 
+     };
+     try {
+       const res = await fetch('http://localhost:3000/api/users', userData, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+      
+       });       
+       setSuccessMessage(res.data.msg);
+       setErrorMessage("");
+     } catch (error) {
+       if(error.res && error.res.data){
+          setErrorMessage(error.res.data.msg);
+          // setSuccessMessage("");
+       }else{
+          setErrorMessage("Something went wrong. Please try again later.");
+          // setSuccessMessage
+       }
+       setSuccessMessage("");
+     }
+
+  };
+
+
   return (
     <main>
 
@@ -20,10 +60,10 @@ export default function Signup() {
       <Sheet
         sx={{
           width: 300,
-          mx: 'auto', // margin left & right
-          my: 4, // margin top & bottom
-          py: 3, // padding top & bottom
-          px: 2, // padding left & right
+          mx: 'auto', 
+          my: 4, 
+          py: 3,
+          px: 2, 
           display: 'flex',
           flexDirection: 'column',
           gap: 2,
@@ -38,6 +78,24 @@ export default function Signup() {
           </Typography>
           <Typography level="body-sm">Sign in to continue.</Typography>
         </div>
+        <FormControl>
+          <FormLabel>First Name</FormLabel>
+          <Input
+            // html input attribute
+            name="firstName"
+            type="text"
+            placeholder="John"
+          />
+        </FormControl>
+        <FormControl>
+          <FormLabel>Last Name</FormLabel>
+          <Input
+            // html input attribute
+            name="lastName"
+            type="text"
+            placeholder="Doe"
+          />
+        </FormControl>
         <FormControl>
           <FormLabel>Email</FormLabel>
           <Input
@@ -56,6 +114,7 @@ export default function Signup() {
             placeholder="password"
           />
         </FormControl>
+       
         <Button sx={{ mt: 1 /* margin top */ }}>Sign Up</Button>
         <Typography
           endDecorator={<Link href="/login">Login</Link>}
