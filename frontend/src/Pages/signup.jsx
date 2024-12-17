@@ -10,6 +10,7 @@ import Button from '@mui/joy/Button';
 import Link from '@mui/joy/Link';
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
+import {cors} from 'cors';
 
 
 export default function Signup() {
@@ -21,37 +22,82 @@ export default function Signup() {
   const [successMessage, setSuccessMessage] = React.useState("");
   const [errorMessage, setErrorMessage] = React.useState("");
 
+  // const handleSignup = async (event) => {
+
+
+  //    event.preventDefault();
+  //    const userData = {
+  //       firstName,
+  //       lastName,
+  //       email,
+  //       password, 
+  //    };
+  //    try {
+  //      const res = await fetch('http://localhost:3000/api/users', userData, {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json'
+  //         },
+  //         body: JSON.stringify(userData),  // Make sure to stringify the userData
+  //       });
+    
+  //       if (!res.ok) {
+  //         throw new Error('Failed to sign up');
+  //       }
+    
+  //     //  });       
+  //      setSuccessMessage(res.data.msg);
+  //      setErrorMessage("");
+  //    } catch (error) {
+  //      if(error.res && error.res.data){
+  //         setErrorMessage(error.res.data.msg);
+  //         // setSuccessMessage("");
+  //      }else{
+  //         setErrorMessage("Something went wrong. Please try again later.");
+  //         // setSuccessMessage
+  //      }
+  //      setSuccessMessage("");
+  //    }
+
+  // };
+
+
   const handleSignup = async (event) => {
-     event.preventDefault();
-     const userData = {
-        firstName,
-        lastName,
-        email,
-        password, 
-     };
-     try {
-       const res = await fetch('http://localhost:3000/api/users', userData, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-      
-       });       
-       setSuccessMessage(res.data.msg);
-       setErrorMessage("");
-     } catch (error) {
-       if(error.res && error.res.data){
-          setErrorMessage(error.res.data.msg);
-          // setSuccessMessage("");
-       }else{
-          setErrorMessage("Something went wrong. Please try again later.");
-          // setSuccessMessage
-       }
-       setSuccessMessage("");
-     }
-
+    event.preventDefault();
+  
+    const userData = {
+      firstName,
+      lastName,
+      email,
+      password,
+    };
+  
+    try {
+      const res = await fetch('http://localhost:3000/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // Make sure to stringify the userData
+        body: JSON.stringify(userData),  
+      });
+  
+      if (!res.ok) {
+        throw new Error('Failed to sign up');
+      }
+  
+      const data = await res.json();
+      setSuccessMessage(data.msg);
+      // Clear any error message
+      setErrorMessage("");  
+  
+    } catch (error) {
+      setErrorMessage("Something went wrong. Please try again later.");
+      // Clear any success message
+      setSuccessMessage("");  
+    }
   };
-
+  
 
   return (
     <main>
@@ -84,7 +130,8 @@ export default function Signup() {
             // html input attribute
             name="firstName"
             type="text"
-            placeholder="John"
+            placeholder="Pankaj"
+            onChange={(e) => setFirstName(e.target.value)}
           />
         </FormControl>
         <FormControl>
@@ -93,7 +140,8 @@ export default function Signup() {
             // html input attribute
             name="lastName"
             type="text"
-            placeholder="Doe"
+            placeholder="Prajapati"
+            onChange={(e) => setLastName(e.target.value)}
           />
         </FormControl>
         <FormControl>
@@ -103,6 +151,7 @@ export default function Signup() {
             name="email"
             type="email"
             placeholder="johndoe@email.com"
+            onChange={(e) => setEmail(e.target.value)}
           />
         </FormControl>
         <FormControl>
@@ -112,13 +161,14 @@ export default function Signup() {
             name="password"
             type="password"
             placeholder="password"
+            onChange={(e) => setPassword(e.target.value)}
           />
         </FormControl>
        
-        <Button sx={{ mt: 1 /* margin top */ }}>Sign Up</Button>
+        <Button sx={{ mt: 1 /* margin top */ }} onClick={handleSignup} >Sign Up</Button>
         <Typography
           endDecorator={<Link href="/login">Login</Link>}
-          sx={{ fontSize: 'sm', alignSelf: 'center' }}
+          sx={{ fontSize: 'sm', alignSelf: 'center' }}  
         >
           Already have a account?
         </Typography>
